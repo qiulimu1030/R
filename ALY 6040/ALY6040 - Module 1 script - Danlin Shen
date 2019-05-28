@@ -1,0 +1,41 @@
+# 1.
+getwd()
+
+# 2.
+setwd("/Users/zack/Desktop/Code/R/ALY 6040")
+file.create("FingersAndCars.txt")
+
+# 3.
+vv <- c(rep(123, 5))
+print(vv)
+class(vv)
+length(vv)
+save(vv, file = "vv.RData")
+rm(vv)
+load("vv.RData")
+print(vv)
+
+# 4.
+save(vv, file = "vv.txt", ascii = TRUE)
+
+# 5.
+list.files()
+
+# 6.
+ALY6040 <- list.files("/Users/zack/Desktop/Code/R/ALY 6070")
+class(ALY6040)
+str(vv)
+mode(vv)
+
+# 7.
+rm(vv)
+vv
+load("vv.RData")
+vv
+
+# 8.
+rm(vv)
+vv
+load("vv.txt")
+vv
+
