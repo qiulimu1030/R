@@ -1,11 +1,11 @@
-# Problem 2 - 1
+# 1.
 getwd()
 
-# Problem 2 - 2
+# 2.
 setwd("/Users/zack/Desktop/Code/R/ALY 6040")
 file.create("FingersAndCars.txt")
 
-# Problem 2 - 3
+# 3.
 vv <- c(rep(123, 5))
 print(vv)
 class(vv)
@@ -15,52 +15,27 @@ rm(vv)
 load("vv.RData")
 print(vv)
 
-# Problem 2 - 4
+# 4.
 save(vv, file = "vv.txt", ascii = TRUE)
 
-# Problem 2 - 5
+# 5.
 list.files()
 
-# Problem 2 - 6
+# 6.
 ALY6040 <- list.files("/Users/zack/Desktop/Code/R/ALY 6070")
 class(ALY6040)
 str(vv)
 mode(vv)
 
-# Problem 2 - 7
+# 7.
 rm(vv)
 vv
 load("vv.RData")
 vv
 
-# Problem 2 - 8
+# 8.
 rm(vv)
 vv
 load("vv.txt")
 vv
 
-# Problem 3
-A <- matrix(c(sample(-3:3, size = 4)), nrow = 3, ncol = 4)
-A
-
-# Problem 3 - 1
-B <- A - 1
-B
-
-# Problem 3 - 2
-C <- A * 2
-C
-
-# Problem 3 - 3
-TA <- t(A)
-TA
-
-# Problem 3 - 4
-ATA <- A %*% TA
-ATA
-dim(ATA)
-
-# Problem 3 - 5
-TAA <- TA %*% A
-TAA
-dim(TAA)
