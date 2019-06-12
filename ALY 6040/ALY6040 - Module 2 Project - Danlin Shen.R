@@ -47,10 +47,6 @@ Binv
 fractions(B %*% Binv)
 fractions(Binv %*% B)
 
-# the product of B and Binv is approximate to the product of Binv and B
-round(B %*% Binv, digits = 0) == round(Binv %*% B, digits = 0)
-round(B %*% Binv, digits = 0)
-
 # 8. Determine the eigenvectors of matrixes B;
 eigen(B)
 as.matrix(eigen(B))
@@ -72,81 +68,67 @@ D
 class(D)
 
 # Problem 2: Find a way to generate a random variable with a uniform probability between -1 and 2. Create a histogram with 20 bars to convince yourself that generated values truly fall under a uniform distribution. Create a histogram presenting the relative cumulative distribution of generated data.
+set.seed(100)
 n <- runif(10000, min = -1, max = 2)
-n
-hist(n,
-     breaks=20,
-     xlab="n",
-     ylab="Relative Frequency",
-     freq=0,
-     ylim=c(0, 1),
-     main="Historgram of Uniform Probability")
-lines(ecdf(n))
+
+ggplot(data.frame(n), aes(x=as.vector(n), y=..density..)) + 
+  geom_histogram(color="white", fill="black", alpha=0.5, bins=50) +
+  xlim(-1, 2) +
+  ggtitle("Problem 2") +
+  labs(x="Value",
+  y="Relative Frequency")
+plot(ecdf(n))
 
 # Problem 3:
 # Create a matrix with 40 columns and 100 rows. Populate each column with random variable of the type created in problem 2. Do not create each vector manually. Try to find a way to present two distributions contained in any two of the columns of your matrix on a single plot. To do that you might want to export the distribution data from two columns into two stand-alone vectors of equal length, e.g. y1 and y2. Plot one distribution first using a call to plot(x,y1), where vector x contains the parameter vector with values between  -1 and 2 you selected above. To add the next curve (distribution y2) try invoking function lines(x,y2). To improve your diagram, present two curves in different colors and add labels on x and y axis, as well as the title to your graph.
 m <- runif(4000, min = -1, max = 2)
 M <- matrix(m, nrow = 100, ncol = 40)
 x <- seq(-1, 2, length=100)
-y1 <- data.frame(M[, 1])
-y2 <- data.frame(M[, 2])
+set.seed(200)
+my <- sample(ncol(M), 2, replace = FALSE)
+y1 <- M[, my[1]]
+y2 <- M[, my[2]]
 
-ggplot(y1, aes(x=x)) +
-    geom_histogram(bins=20,
-    color="black",
-    fill="white")
+getDist <- function(vector, breaks){
+  vector_cut = cut(vector, breaks, right=FALSE)
+  vector_freq = table(vector_cut) 
+  vector_freq = c(0, vector_freq)
+  return(vector_freq)
+}
 
+breaks = seq(-1, 1, by=0.1)
+dist1 <- getDist(y1, breaks)
+dist2 <- getDist(y2, breaks)
 
+df_dist <- data.frame(breaks, dist1, dist2)
 
-n <- data.frame(x)
-class(n)
-
-ggplot(y2, aes(x=n, y=y2)) + geom_line()
-
-
-ggplot(data=df, aes(x=dos, y=len, group=1)) +
-  geom_line()+
-  geom_point()
-
-
-# 直方图
-p <- ggplot(mpg, aes(x=hwy))
-p + geom_histogram()
-
-p+geom_histogram(aes(fill=factor(year),y=..density..),alpha=0.3,colour="black")+
-  stat_density(geom="line",position="identity",size=1.5,aes(colour=factor(year)))+
-  facet_wrap(~year,ncol=1)
-
-# 条形图
-p<-ggplot(mpg,aes(x=class))
-p+geom_bar()
-
-class2<-mpg$class
-class2<-reorder(class2,class2,length)
-mpg$class2<-class2
-p<-ggplot(mpg,aes(x=class2))
-p+geom_bar(aes(fill=class2))
-
-p<-ggplot(mpg,aes(class2,fill=factor(year)))
-p+geom_bar(position="identity",alpha=0.5)
-
-# 条形图 并列
-p+geom_bar(position="dodge")
-
-# 条形图 叠加
-p+geom_bar(position="stack")
-
-# 条形图 相对比例
-p+geom_bar(position="fill")
-
-# 条形图 分面显示
-p+geom_bar(aes(fill=class2))+facet_wrap(~year)
-
+ggplot(data=df_dist, aes(x=breaks)) +
+  geom_line(y=dist1, color="black", alpha=0.5, size=0.8) +
+  geom_line(y=dist2, color="darkred", alpha=0.5, size=0.8) +
+  geom_point(y=dist1, color="black", alpha=0.5, size=2) +
+  geom_point(y=dist2, color="darkred", alpha=0.5, size=2) +
+  ylim(0, 11) +
+  ggtitle("Problem 3") +
+  labs(x="Value", y="Frequency")
 
 # Problem 4:
 # Start with your matrix from problem 3. Add yet another column to that matrix and populate that column with the sum of original 40 columns. Create a histogram of values in the new column showing that the distribution starts to resemble the Gaussian curve. Add a true, calculated, Gaussian curve to that diagram with the parameters you expect from the sum of 40 random variables of uniform distribution with values between -1 and 2.
+M2 <- cbind(M, rowSums(M))
+ggplot(data=NULL, aes(x=M2[, 41])) +
+  geom_histogram(color="white", fill="black", alpha=0.5, bins=50) +
+  ggtitle("Problem 4") +
+  labs(x="Value", y="Frequency")
 
-head(mpg)
-qplot(displ, hwy, data = mpg, color = drv)
-qplot(displ, hwy, data = mpg, geom = c("point", "smooth"))
-qplot(hwy, data = mpg, fill = drv)
+mean(x=M2[, 41])
+sqrt(var(x=M2[, 41]))
+
+ggplot(data=NULL, aes(x=M2[, 41])) +
+  geom_histogram(color="white", fill="black",
+                 alpha=0.5, bins=50,
+                 aes(y=..density..)) +
+  ggtitle("Problem 4") +
+  labs(x="Value", y="Density")+
+  stat_function(fun = dnorm, 
+                args = list(mean = 0, sd = 0.5), 
+                lwd = 0.8,
+                col = 'darkred')
